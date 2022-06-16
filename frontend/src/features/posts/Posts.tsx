@@ -9,6 +9,7 @@ import {
   Statuses,
 } from "./postSlice";
 import Post from "./Post";
+import PostForm from "./PostForm";
 
 export default function Posts() {
   const posts = useAppSelector(selectPosts);
@@ -28,7 +29,9 @@ export default function Posts() {
       <div className="card">
         <div className="card-body">
           <h3>{status}</h3>
-          {/* form goes here */}
+          <div className="container">
+            <PostForm/>
+          </div>
           {posts?.length > 0 &&
             posts.map((post, index) => {
               return (

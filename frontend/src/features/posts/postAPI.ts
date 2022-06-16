@@ -1,4 +1,4 @@
-import { PostsState } from "./postSlice";
+import { PostFormData, PostsState } from "./postSlice";
 
 const API_URL = "http://localhost:3000";
 
@@ -15,4 +15,17 @@ export async function fetchPosts() {
     });
 }
 
-export default fetchPosts;
+export async function createPost(payload:PostFormData) {
+  const post = payload.post;
+  return fetch(`${API_URL}/posts.json`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({post}),
+  })
+    .then((resp) => resp.json())
+    .catch((err) => {
+      console.log(err);
+    });
+}
