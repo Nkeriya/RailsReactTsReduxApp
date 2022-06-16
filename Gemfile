@@ -70,3 +70,6 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+
+# It provides support for Cross-Origin Resource Sharing (CORS) for Rack compatible web applications
+gem 'rack-cors'
