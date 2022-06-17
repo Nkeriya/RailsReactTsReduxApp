@@ -1,4 +1,4 @@
-import { PostFormData, PostsState } from "./postSlice";
+import { PostFormData, PostDeleteData, PostsState } from "./postSlice";
 
 const API_URL = "http://localhost:3000";
 
@@ -12,20 +12,37 @@ export async function fetchPosts() {
     .then((resp) => resp.json())
     .catch((err) => {
       console.log(err);
+      return {} as PostsState;
     });
 }
 
-export async function createPost(payload:PostFormData) {
+export async function createPost(payload: PostFormData) {
   const post = payload.post;
   return fetch(`${API_URL}/posts.json`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify({post}),
+    body: JSON.stringify({ post }),
   })
     .then((resp) => resp.json())
     .catch((err) => {
       console.log(err);
+      return {} as PostsState;
+    });
+}
+
+export async function deletePost(payload: PostDeleteData) {
+  const post = payload.post;
+  return fetch(`${API_URL}/posts/${post.post_id}.json`, {
+    method: "DELETE",
+    headers: {
+      "content-type": "application/json",
+    },
+  })
+    .then((resp) => resp.json())
+    .catch((err) => {
+      console.log(err);
+      return {} as PostsState;
     });
 }

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { produce } from "immer";
 import { RootState, AppThunk } from "../../app/store";
-import { fetchPosts, createPost } from "./postAPI";
+import { fetchPosts, createPost, deletePost } from "./postAPI";
 
 export enum Statuses {
   Initial = "Not fetched",
@@ -9,25 +9,6 @@ export enum Statuses {
   UpToDate = "Up To Date",
   Deleted = "Deleted",
   Error = "Error",
-}
-
-export interface PostState {
-  id?: Number; // ? mark makes the parameter optional here, i.e, it may not be present in response
-  title?: String;
-  body?: String;
-}
-
-export interface PostsState {
-  posts: PostState[];
-  status: String;
-}
-
-export interface PostFormData {
-  post: {
-    id?: String;
-    title: String;
-    body: String;
-  };
 }
 
 const initialState: PostsState = {
@@ -41,6 +22,31 @@ const initialState: PostsState = {
   status: Statuses.Initial,
 };
 
+export interface PostsState {
+  posts: PostState[];
+  status: String;
+}
+
+export interface PostState {
+  id?: Number; // ? mark makes the parameter optional here, i.e, it may not be present in response
+  title?: String;
+  body?: String;
+}
+
+export interface PostFormData {
+  post: {
+    id?: String;
+    title: String;
+    body: String;
+  };
+}
+
+export interface PostDeleteData {
+  post: {
+    post_id: Number;
+  };
+}
+
 export const fetchPostsAsync = createAsyncThunk(
   "posts/fetchPosts",
   async () => {
@@ -53,6 +59,14 @@ export const createPostAsync = createAsyncThunk(
   "posts/createPost",
   async (payload: PostFormData) => {
     const resp = await createPost(payload);
+    return resp;
+  }
+);
+
+export const deletePostAsync = createAsyncThunk(
+  "posts/DeletePost",
+  async (payload: PostDeleteData) => {
+    const resp = await deletePost(payload);
     return resp;
   }
 );
@@ -102,6 +116,23 @@ export const postSlice = createSlice({
           draftState.status = Statuses.Error;
         });
       })
+      /* Delete Section */
+      .addCase(deletePostAsync.pending, (state) => {
+        return produce(state, (draftState) => {
+          draftState.status = Statuses.Loading;
+        });
+      })
+      .addCase(deletePostAsync.fulfilled, (state, action) => {
+        return produce(state, (draftState) => {
+          draftState.posts = action.payload;
+          draftState.status = Statuses.UpToDate;
+        });
+      })
+      .addCase(deletePostAsync.rejected, (state) => {
+        return produce(state, (draftState) => {
+          draftState.status = Statuses.Error;
+        });
+      });
   },
 });
 

@@ -53,7 +53,7 @@ export default function PostForm() {
         />
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-success mt-3"
           onClick={(e) => submitHandler(e)}
         >
           Submit
